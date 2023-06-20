@@ -1,12 +1,15 @@
 ## BioTorch 
 ```pip install biotorch```
-Or you can get sourc
+Or you can get source
 ```git clone https://github.com/jsalbert/biotorch.git```
+
 ```cd biotorch```
+
 ```script/setup```
+
 # BioTorch Fuzzer
 
-BioTorch Fuzzer is a tool for testing and analyzing code coverage and bug detection of various functions provided by the BioTorch library. It allows for effective testing and debugging of BioTorch functions.
+BioTorch Fuzzer is a tool for testing and analyzing code coverage and bug detection of various functions provided by the BioTorch library. It allows for effective testing and debugging of BioTorch functions
 
 ## Usage
 
@@ -26,7 +29,9 @@ BioTorch Fuzzer is a tool for testing and analyzing code coverage and bug detect
    ```python
    num_iterations = 100
    fuzzer = BioTorchFuzzer(num_iterations)
-   fuzzer.run() ```
+   fuzzer.run() 
+   
+   ```
 
    After running the test, you can see the following results:
    
