@@ -1,6 +1,10 @@
 ## BioTorch 
 ```pip install biotorch```
+
 Or you can get source
+
+```git```
+
 ```git clone https://github.com/jsalbert/biotorch.git```
 
 ```cd biotorch```
@@ -40,20 +44,23 @@ BioTorch Fuzzer is a tool for testing and analyzing code coverage and bug detect
    - Average Coverage: Prints the average value of code coverage
    - Mutation Ratio: Prints the mutation ratio
 
-   3. Graph Visualization
+3. Graph Visualization
+
    You can use the matplotlib.pyplot library to visualize the coverage graph. Use the average_coverage and cumulative_coverage lists to plot the graph.
 
-   ```import matplotlib.pyplot as plt
-
-plt.plot(average_coverage)
-plt.title('Average coverage of BioTorch functions with random inputs')
-plt.xlabel('# of inputs')
-plt.ylabel('lines covered')
-
-plt.plot(cumulative_coverage)
-plt.title('Coverage of BioTorch functions with random inputs')
-plt.xlabel('# of inputs')
-plt.ylabel('lines covered')
+   ```python
+   import matplotlib.pyplot as plt
+   plt.plot(average_coverage)
+   plt.title('Average coverage of BioTorch functions with random inputs')
+   plt.xlabel('# of inputs')
+   plt.ylabel('lines covered')
+   
+   plt.plot(cumulative_coverage)
+   plt.title('Coverage of BioTorch functions with random inputs')
+   plt.xlabel('# of inputs')
+   plt.ylabel('lines covered')
 ```
+
+
 
 
