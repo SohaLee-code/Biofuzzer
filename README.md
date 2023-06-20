@@ -3,8 +3,6 @@
 
 Or you can get source
 
-```git```
-
 ```git clone https://github.com/jsalbert/biotorch.git```
 
 ```cd biotorch```
