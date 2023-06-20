@@ -9,11 +9,11 @@ import biotorch.layers.brsf as BRSF
 import biotorch.layers.dfa as DFA
 import biotorch.layers.frsf as FRSF
 import biotorch.layers.usf as USF
-
 class BioTorchFuzzer:
-    def __init__(self, num_iterations):
-               
+    def __init__(self, num_iterations, time_objective, bug_discovery_objective):
         self.num_iterations = num_iterations
+        self.time_objective = time_objective
+        self.bug_discovery_objective = bug_discovery_objective
         self.line_coverage = set()
         self.cumulative_coverage = []
         self.average_coverage = []
@@ -39,14 +39,12 @@ class BioTorchFuzzer:
             {"name": "arithmetic_operations", "weight": 0.3, "coverage_increase": 0, "bugs_found": 0}
         ]
 
-    # first : generate random input
     def generate_input(self):
         # Generate random tensor input
         tensor_size = random.randint(1, 10)
         input_data = torch.randn(tuple([random.randint(1, 5) for _ in range(tensor_size)]))
         return input_data
-    
-    # Calculate mutation analysis is good
+
     def evaluate_mutation_techniques(self):
         # Calculate coverage increase and bugs found for each mutation technique
         for technique in self.mutation_techniques:
@@ -83,7 +81,6 @@ class BioTorchFuzzer:
         self.cumulative_coverage.append(len(self.line_coverage))
         self.average_coverage.append(sum(self.cumulative_coverage) / len(self.cumulative_coverage))
 
-
     def mutate_input(self, input_data, target_function):
         mutated_input = target_function(input_data)
         self.mutation_analysis["total_mutations"] += 1
@@ -93,12 +90,15 @@ class BioTorchFuzzer:
         return mutated_input
 
     def run(self):
-        for _ in range(self.num_iterations):
+        start_time = time.time()  # Track start time
+        for iteration in range(self.num_iterations):
+            if time.time() - start_time > self.time_objective:
+                break  # Time objective reached, exit loop
+
             input_data = self.generate_input()
 
             for target_function in self.target_functions:
                 try:
-                    # Perform forward pass
                     model = torch.nn.Sequential(
                         target_function(input_data.size(-1), 16),
                         torch.nn.ReLU(),
@@ -117,13 +117,17 @@ class BioTorchFuzzer:
 
                 except Exception as e:
                     self.handle_exception(e, input_data, target_function)
-                                
+
+            if len(self.bug_reports) >= self.bug_discovery_objective:
+                break  # Bug discovery objective reached, exit loop
 
         if self.mutation_analysis["total_mutations"] != 0:
             self.mutation_analysis["mutation_ratio"] = (
-            self.mutation_analysis["successful_mutations"] / self.mutation_analysis["total_mutations"])
+                self.mutation_analysis["successful_mutations"] / self.mutation_analysis["total_mutations"]
+            )
         else:
             self.mutation_analysis["mutation_ratio"] = 0.0
+
 
     def handle_exception(self, exception, input_data, target_function):
 
@@ -183,9 +187,10 @@ class BioTorchFuzzer:
         rearranged_data = rearranged_data.reshape(input_shape)
         return rearranged_data
 
-# Usage example
 num_iterations = 100
-fuzzer = BioTorchFuzzer(num_iterations)
+time_objective = 360 
+bug_discovery_objective = 500
+fuzzer = BioTorchFuzzer(num_iterations, time_objective, bug_discovery_objective)
 fuzzer.run()
 
 # Bug Reports
@@ -208,12 +213,14 @@ mutation_ratio = fuzzer.mutation_analysis["mutation_ratio"]
 print(f"Mutation Ratio: {mutation_ratio:.2f}")
 
 
-plt.plot(average_coverage)
+plt.plot(average_coverage, label = 'average_coverage')
 plt.title('Average coverage of cgi_decode() with random inputs')
 plt.xlabel('# of inputs')
 plt.ylabel('lines covered')
 
-plt.plot(cumulative_coverage)
+plt.plot(cumulative_coverage, label = 'cumulative_coverage')
 plt.title('Coverage of cgi_decode() with random inputs')
 plt.xlabel('# of inputs')
 plt.ylabel('lines covered')
+
+plt.legend()
