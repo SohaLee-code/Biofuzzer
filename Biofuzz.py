@@ -9,6 +9,8 @@ import biotorch.layers.brsf as BRSF
 import biotorch.layers.dfa as DFA
 import biotorch.layers.frsf as FRSF
 import biotorch.layers.usf as USF
+import csv
+
 class BioTorchFuzzer:
     def __init__(self, num_iterations, time_objective, bug_discovery_objective):
         self.num_iterations = num_iterations
@@ -224,3 +226,22 @@ plt.xlabel('# of inputs')
 plt.ylabel('lines covered')
 
 plt.legend()
+
+new_bug_count = len(fuzzer.bug_reports)
+print("Number of new bugs discovered:", new_bug_count)
+
+#####################################################
+
+file_path = "./bug_reports.csv"
+
+with open(file_path, mode="w", newline="") as file:
+    writer = csv.writer(file)
+    
+    writer.writerow(["Exception", "Target Function"])
+    
+    for report in fuzzer.bug_reports:
+        exception = report["exception"]
+        target_function = report["target_function"]
+        writer.writerow([exception, target_function])
+        
+print("Bug reports saved to:", file_path)
